@@ -16,7 +16,7 @@ fi
 
 # Instalación de Zsh
 # Install Zsh
-sudo apt install zsh
+sudo apt install zsh -y
 
 # Cambiar el shell por defecto a Zsh
 # Change the default shell to Zsh
