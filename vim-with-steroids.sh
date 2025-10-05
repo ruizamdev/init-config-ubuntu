@@ -46,7 +46,7 @@ cat << 'EOF' > ~/.vimrc
 " ============= PLUGINS =============
 call plug#begin('~/.vim/plugged')
 
-Plug 'morhetz/gruvbox'
+Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'preservim/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
@@ -59,7 +59,7 @@ Plug 'jiangmiao/auto-pairs'
 call plug#end()
 
 " ============= CONFIGURACIÓN =============
-colorscheme gruvbox
+colorscheme dracula
 set background=dark
 set number
 set relativenumber
