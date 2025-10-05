@@ -32,7 +32,14 @@ fi
 
 # Configuración básica de Vim
 # Basic Vim configuration
+if [ -f ~/.vimrc ]; then
+  echo "El archivo .vimrc ya existe. Haciendo una copia de seguridad..."
+  cp ~/.vimrc ~/.vimrc.backup.$(date +%Y%m%d_%H%M%S)
+  echo "Copia de seguridad creada"
+fi
+
 echo "Creando archivo .vimrc con configuración básica..."
+
 touch ~/.vimrc
 
 cat << 'EOF' > ~/.vimrc
@@ -76,4 +83,4 @@ echo "Configuración básica de Vim creada en ~/.vimrc"
 echo "Instalando plugins de Vim..."
 vim +PlugInstall +qall
 
-echo "Vim se a arponeado con éxito. ¡A partir madres valedor!"
+echo "Vim se ha arponeado con éxito. ¡A partir madres valedor!"
