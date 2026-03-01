@@ -46,6 +46,9 @@ main() {
   run_step "Instalando FreeRDP" sudo apt install -y freerdp3-x11
   run_step "Instalando ZeroTier" install_zt
 
+  print_section "Instalación de utilerias de ofimática"
+  run_step "Instalando Okular" sudo apt install -y okular
+
   print_section "Instalación de utilerias misceláneas"
   run_step "Instalando Shutter" sudo apt install -y shutter
   run_step "Instalando Eza" sudo apt install -y eza
