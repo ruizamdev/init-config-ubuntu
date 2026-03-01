@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Nota: Mantener el script de OH-MY-ZSH al final, ya que cambia el shell por defecto a zsh y corta el script principal.
 
 SCRIPTS=(
   "./scripts/install-chrome.sh"
@@ -11,6 +10,8 @@ SCRIPTS=(
   "./scripts/vim-with-steroids.sh"
   "./scripts/install-nodejs.sh"
   "./scripts/install-docker.sh"
+  "./scripts/install-linux-virt.sh"
+# Nota: Mantener el script de OH-MY-ZSH al final, ya que cambia el shell por defecto a zsh y corta el script principal.
   "./scripts/install-oh-my-zsh.sh"
 )
 
