@@ -4,8 +4,8 @@
 # Info variables
 # -------------
 
-TITLE="Instalación de Docker"
-DESCRIPTION="Script para instalar Docker Engine en sistemas basados en Ubuntu."
+TITLE="Instalación de Virtualización en Linux (KVM/QEMU)"
+DESCRIPTION="Este script instala y configura las herramientas necesarias para la virtualización en Linux utilizando KVM y QEMU. Incluye la instalación de virt-manager para una gestión gráfica de las máquinas virtuales."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
@@ -111,15 +111,16 @@ main() {
     sudo -v
   fi
 
-  print_section "Instalación"
-  run_step "Desinstalando paquetes conflictivos" bash -c 'sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)'
-  run_step "Configurando repositorio de Docker" repo_config
-  run_step "Instalando Docker Engine" bash -c 'sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y'
-  run_step "Agregando usuario al grupo docker" bash -c 'sudo usermod -aG docker $USER'
-  run_step "Habilitando servicio" sudo systemctl start docker
-  print_section "Verificando instalación"
-  sudo docker run hello-world
+  # ===============================================
+  # Aquí van los pasos principales del script
 
+  print_section "instalación de paquetes necesarios"
+  run_step "Instalando paquetes de virtualización" install
+  
+  print_section "Configurando permisos"
+  run_step "Agregando usuario a grupos de virtualización" add_user
+  
+  # ===============================================
 
   echo -e "\n${GREEN}${BOLD}Proceso terminado correctamente.${RESET}"
 }
@@ -128,26 +129,14 @@ main() {
 # Funciones adicionales
 # ================================
 
-repo_config() {
-  # Add Docker's official GPG key:
-sudo apt update
-sudo apt install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+install() {
+  sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+}
 
-# Add the repository to Apt sources:
-sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
-Types: deb
-URIs: https://download.docker.com/linux/ubuntu
-Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-Components: stable
-Signed-By: /etc/apt/keyrings/docker.asc
-EOF
-
-sudo apt update
+add_user() {
+  sudo usermod -aG libvirt $USER
+  sudo usermod -aG kvm $USER
 }
 
 # Ejecuta la función principal
 main "$@"
-
