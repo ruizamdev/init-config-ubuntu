@@ -5,100 +5,19 @@
 # -------------
 
 TITLE="Instalación de Utilerias Esenciales"
-DESCRIPTION="Descripción del proceso o instalación"
+DESCRIPTION="Este script instala una serie de utilerías esenciales para el entorno de desarrollo y uso general en Linux."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
 
 # ===============================
-# Color definitions
+# Shared modules
 # ===============================
 
-if command -v tput >/dev/null 2>&1; then
-  BOLD="$(tput bold)"
-  BLUE="$(tput setaf 4)"
-  YELLOW="$(tput setaf 3)"
-  GREEN="$(tput setaf 2)"
-  RED="$(tput setaf 1)"
-  DARK_GREY="$(tput setaf 8)"
-  LIGHT_GREY="$(tput setaf 7)"
-  RESET="$(tput sgr0)"
-else
-  BOLD=""
-  YELLOW=""
-  GREEN=""
-  RED=""
-  DARK_GREY=""
-  LIGHT_GREY=""
-  RESET=""
-fi
-
-# ===============================
-# Header function
-# ===============================
-
-print_header() {
-  local TITLE="$1"
-  local DESCRIPTION="${2:-}"
-  local AUTHOR="${3:-}"
-  local WIDTH
-
-  if command -v tput >/dev/null 2>&1; then
-    WIDTH=$(tput cols)
-  else
-    WIDTH=80
-  fi
-
-  printf "\n${BLUE}%*s${RESET}\n" "$WIDTH" "" | tr ' ' '='
-  printf "${BOLD}%*s${RESET}\n" $(((${#TITLE} + WIDTH) / 2)) "$TITLE"
-  if [[ -n "$DESCRIPTION" ]]; then
-    printf "${DARK_GREY}%*s${RESET}\n" $(((${#DESCRIPTION} + WIDTH) / 2)) "$DESCRIPTION"
-  fi
-  if [[ -n "$AUTHOR" ]]; then
-    printf "${DARK_GREY}%*s${RESET}\n" $(((${#AUTHOR} + WIDTH) / 2)) "$AUTHOR"
-  fi
-  printf "${BLUE}%*s${RESET}\n\n" "$WIDTH" "" | tr ' ' '='
-}
-
-# ===============================
-# Section function
-# ===============================
-
-print_section() {
-  local TEXT="$1"
-  echo -e "\n${BOLD}▶  ${TEXT}${RESET}\n"
-}
-
-# ===============================
-# Step function
-# ===============================
-
-run_step() {
-  local label="$1"
-  shift
-
-  local log_file
-  log_file="$(mktemp)"
-
-  # Mensaje en progreso
-  printf "\r${YELLOW}⏳ %s...${RESET}" "$label"
-
-  if "$@" >"$log_file" 2>&1; then
-    # Limpia la linea de progreso
-    printf "\r\033[K"
-    printf "${GREEN}✔  %s${RESET}\n" "$label"
-    rm -f "$log_file"
-    return 0
-  fi
-
-  # Error: limpia progreso, muestra detalle y corta flujo
-  printf "\r\033[K"
-  printf "${RED}${BOLD}✖  %s${RESET}\n" "$label"
-  echo "${RED}Detalle del error:${RESET}"
-  tail -n 40 "$log_file" || true
-  rm -f "$log_file"
-  return 1
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+# shellcheck source=../modules/run-step-ui.sh
+source "$ROOT_DIR/modules/run-step-ui.sh"
 
 # ===============================
 # Main function
@@ -114,9 +33,24 @@ main() {
   # ===============================================
   # Aquí van los pasos principales del script
 
-  print_section "Ejecutando pasos principales"
-  run_step "Label del proceso" function_1 # <-- comando o función
-  
+  print_section "Actualizando lista de paquetes"
+  run_step "Actualizando paquetes" sudo apt update
+
+  print_section "Instalación de utilerias de sistema"
+  run_step "Instalando BashTop" sudo apt install -y bashtop
+  run_step "Instalando GParted" sudo apt install -y gparted
+  run_step "Instalando LMSensors" sudo apt install -y lm-sensors
+
+  print_section "Instalación de utilerias de red"
+  run_step "Instalando filezilla" sudo apt install -y filezilla
+  run_step "Instalando FreeRDP" sudo apt install -y freerdp3-x11
+  run_step "Instalando ZeroTier" install_zt
+
+  print_section "Instalación de utilerias misceláneas"
+  run_step "Instalando Shutter" sudo apt install -y shutter
+  run_step "Instalando Eza" sudo apt install -y eza
+  run_step "Instalando Grc" sudo apt install -y grc
+
   # ===============================================
 
   echo -e "\n${GREEN}${BOLD}Proceso terminado correctamente.${RESET}"
@@ -126,11 +60,9 @@ main() {
 # Funciones adicionales
 # ================================
 
-function_1() {
-  # Simula un proceso que tarda
-  sleep 3
-  # Para simular error, descomenta la siguiente línea:
-  # return 1
+install_zt() {
+  curl -s 'https://raw.githubusercontent.com/zerotier/ZeroTierOne/main/doc/contact%40zerotier.com.gpg' | gpg --import && \
+if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | sudo bash; fi
 }
 
 # Ejecuta la función principal
