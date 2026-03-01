@@ -42,6 +42,7 @@ main() {
   run_step "Instalando LMSensors" sudo apt install -y lm-sensors
 
   print_section "Instalación de utilerias de red"
+  run_step "Instalando Thunderbird" sudo apt install -y thunderbird
   run_step "Instalando filezilla" sudo apt install -y filezilla
   run_step "Instalando FreeRDP" sudo apt install -y freerdp3-x11
   run_step "Instalando ZeroTier" install_zt
