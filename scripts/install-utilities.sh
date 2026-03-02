@@ -69,5 +69,10 @@ install_zt() {
 if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | sudo bash; fi
 }
 
+install_winbind() {
+  sudo apt install -y winbind libnss-winbind
+  sudo sed -i -E '/^hosts:/ { /(^|[[:space:]])wins([[:space:]]|$)/! s/$/ wins/ }' /etc/nsswitch.conf
+}
+
 # Ejecuta la función principal
 main "$@"

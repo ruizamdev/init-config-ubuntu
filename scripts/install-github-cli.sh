@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
-# Patron reutilizable para ejecutar pasos silenciosos con estado visual.
-# - Muestra "procesando" en amarillo mientras corre un comando.
-# - Si termina bien, limpia la linea y muestra OK en verde.
-# - Si falla, limpia la linea, muestra FAIL en rojo, imprime el error y detiene el script.
 
 # -------------
 # Info variables
 # -------------
 
-TITLE="Titulo. Lorem Ipsum dolor sit amet"
-DESCRIPTION="Descripción del proceso o instalación. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+TITLE="Instalación de GitHub CLI"
+DESCRIPTION="Este script instala GitHub CLI (gh) en el sistema operativo Linux."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
@@ -37,8 +33,9 @@ main() {
   # ===============================================
   # Aquí van los pasos principales del script
 
-  print_section "Ejecutando pasos principales"
-  run_step "Label del proceso" function_1 # <-- comando o función
+  print_section "Instalación"
+  run_step "Agregando repositorio de GitHub CLI" add_repo
+  run_step "Instalando GitHub CLI" sudo apt install gh -y
   
   # ===============================================
 
@@ -49,11 +46,15 @@ main() {
 # Funciones adicionales
 # ================================
 
-function_1() {
-  # Simula un proceso que tarda
-  sleep 3
-  # Para simular error, descomenta la siguiente línea:
-  # return 1
+add_repo() {
+  (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update
 }
 
 # Ejecuta la función principal
