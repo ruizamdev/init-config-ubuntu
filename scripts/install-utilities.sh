@@ -41,6 +41,13 @@ main() {
   run_step "Instalando GParted" sudo apt install -y gparted
   run_step "Instalando LMSensors" sudo apt install -y lm-sensors
 
+  print_section "Instalación de utilerias de desarrollo"
+  run_step "Instalando Git" sudo apt install -y git
+  run_step "Instalando Curl" sudo apt install -y curl
+  run_step "Instalando Wget" sudo apt install -y wget
+  run_step "Instalando Unzip" sudo apt install -y unzip
+  run_step "Instalando Build-Essential" sudo apt install -y build-essential
+
   print_section "Instalación de utilerias de red"
   run_step "Instalando SpeedTest CLI" sudo apt install -y speedtest-cli
   run_step "Instalando Thunderbird" sudo apt install -y thunderbird
