@@ -62,6 +62,7 @@ main() {
   run_step "Instalando Shutter" sudo apt install -y shutter
   run_step "Instalando Eza" sudo apt install -y eza
   run_step "Instalando Grc" sudo apt install -y grc
+  run_step "Instalando tree" sudo apt install -y tree
 
   # ===============================================
 
