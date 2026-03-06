@@ -4,8 +4,8 @@
 # Info variables
 # -------------
 
-TITLE="Instalación de Virtualización en Linux (KVM/QEMU)"
-DESCRIPTION="Este script instala y configura las herramientas necesarias para la virtualización en Linux utilizando KVM y QEMU. Incluye la instalación de virt-manager para una gestión gráfica de las máquinas virtuales."
+TITLE="Instalación de GitHub CLI"
+DESCRIPTION="Este script instala GitHub CLI (gh) en el sistema operativo Linux."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
@@ -33,11 +33,9 @@ main() {
   # ===============================================
   # Aquí van los pasos principales del script
 
-  print_section "instalación de paquetes necesarios"
-  run_step "Instalando paquetes de virtualización" install
-  
-  print_section "Configurando permisos"
-  run_step "Agregando usuario a grupos de virtualización" add_user
+  print_section "Instalación"
+  run_step "Agregando repositorio de GitHub CLI" add_repo
+  run_step "Instalando GitHub CLI" sudo apt install gh -y
   
   # ===============================================
 
@@ -48,13 +46,15 @@ main() {
 # Funciones adicionales
 # ================================
 
-install() {
-  sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
-}
-
-add_user() {
-  sudo usermod -aG libvirt $USER
-  sudo usermod -aG kvm $USER
+add_repo() {
+  (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update
 }
 
 # Ejecuta la función principal

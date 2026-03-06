@@ -4,8 +4,8 @@
 # Info variables
 # -------------
 
-TITLE="Instalación de Virtualización en Linux (KVM/QEMU)"
-DESCRIPTION="Este script instala y configura las herramientas necesarias para la virtualización en Linux utilizando KVM y QEMU. Incluye la instalación de virt-manager para una gestión gráfica de las máquinas virtuales."
+TITLE="Instalación de Spotify"
+DESCRIPTION="Este script instala Spotify en el sistema desde paquete DEB oficial."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
@@ -32,12 +32,11 @@ main() {
 
   # ===============================================
   # Aquí van los pasos principales del script
-
-  print_section "instalación de paquetes necesarios"
-  run_step "Instalando paquetes de virtualización" install
+  print_section "Agregando repositorio de Spotify"
+  run_step "Agregando clave GPG" add_repo
+  print_section "Instalando Spotify"
+  run_step "Instalando paquete" install_package
   
-  print_section "Configurando permisos"
-  run_step "Agregando usuario a grupos de virtualización" add_user
   
   # ===============================================
 
@@ -48,13 +47,14 @@ main() {
 # Funciones adicionales
 # ================================
 
-install() {
-  sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+add_repo(){
+  curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+  echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 }
 
-add_user() {
-  sudo usermod -aG libvirt $USER
-  sudo usermod -aG kvm $USER
+install_package() {
+  sudo apt update
+  sudo apt install spotify-client -y
 }
 
 # Ejecuta la función principal

@@ -4,8 +4,8 @@
 # Info variables
 # -------------
 
-TITLE="Instalación de Virtualización en Linux (KVM/QEMU)"
-DESCRIPTION="Este script instala y configura las herramientas necesarias para la virtualización en Linux utilizando KVM y QEMU. Incluye la instalación de virt-manager para una gestión gráfica de las máquinas virtuales."
+TITLE="Titulo del Script"
+DESCRIPTION="Descripción del script y lo que hace en general."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
@@ -33,11 +33,7 @@ main() {
   # ===============================================
   # Aquí van los pasos principales del script
 
-  print_section "instalación de paquetes necesarios"
-  run_step "Instalando paquetes de virtualización" install
   
-  print_section "Configurando permisos"
-  run_step "Agregando usuario a grupos de virtualización" add_user
   
   # ===============================================
 
@@ -48,14 +44,6 @@ main() {
 # Funciones adicionales
 # ================================
 
-install() {
-  sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
-}
-
-add_user() {
-  sudo usermod -aG libvirt $USER
-  sudo usermod -aG kvm $USER
-}
 
 # Ejecuta la función principal
 main "$@"
