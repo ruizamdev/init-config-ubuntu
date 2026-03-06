@@ -40,6 +40,8 @@ main() {
   print_section "Instalación de la app"
   run_step "Instalando Warp Terminal" install_app
 
+  sleep 5
+  
   print_section "Instalación de temas"
   run_step "Instalando temas para Warp Terminal" install_themes
   
@@ -80,7 +82,7 @@ sudo apt-get install -y warp-terminal
 }
 
 install_themes() {
-  if [[ -e "${XDG_DATA_HOME:-$HOME/.local/share}/warp-terminal" ]]; then
+  if [[ ! -e "${XDG_DATA_HOME:-$HOME/.local/share}/warp-terminal" ]]; then
     mkdir -p ${XDG_DATA_HOME:-$HOME/.local/share}/warp-terminal
   fi
   cd ${XDG_DATA_HOME:-$HOME/.local/share}/warp-terminal/
