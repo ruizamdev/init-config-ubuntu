@@ -118,11 +118,15 @@ omz_install() {
     zsh-autosuggestions\
     zsh-completions\
   )' ~/.zshrc
+
 }
 
 
 # Ejecuta la función principal
 main "$@"
+
+echo -e "\n${YELLOW}Si tu sistema es Kubuntu, agrega esta línea: ${RED}${BOLD}emulate sh -c 'source /etc/profile'${RESET} ${YELLOW}a este fichero:${RESET}${RED}${BOLD} /etc/zsh/zprofile ${RESET}"
+echo -e "\n${BLUE} Esto es para que las apps instaladas con snap se indicen correctamente en el menú de aplicaciones. ${RESET}"
 
 read -p "Cambia la fuente en tu terminal a Agave Nerd Font y presiona enter para continuar con la configuración de zsh..."
 # Iniciar configuración del tema Powerlevel10k
