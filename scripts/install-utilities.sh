@@ -49,9 +49,12 @@ main() {
   run_step "Instalando Build-Essential" sudo apt install -y build-essential
 
   print_section "Instalación de utilerias de red"
+  run_step "Instalación de Server SSH" install_ssh
   run_step "Instalando Net Tools" sudo apt install -y net-tools
   run_step "Instalando nmap with gui" sudo apt install -y zenmap
+  run_step "Instalando Winbind" install_winbind
   run_step "Instalando SpeedTest CLI" sudo apt install -y speedtest-cli
+  run_step "Instalando Transmission BitTorrent Client" sudo apt install -y transmission
   run_step "Instalando Thunderbird" sudo apt install -y thunderbird
   run_step "Instalando filezilla" sudo apt install -y filezilla
   run_step "Instalando FreeRDP" sudo apt install -y freerdp3-x11
@@ -59,6 +62,9 @@ main() {
 
   print_section "Instalación de utilerias de ofimática"
   run_step "Instalando Okular" sudo apt install -y okular
+
+  print_section "Instalación de apps multimedia"
+  run_step "Instalando VLC" sudo apt install -y vlc
 
   print_section "Instalación de utilerias misceláneas"
   run_step "Instalando Shutter" sudo apt install -y shutter
@@ -83,6 +89,13 @@ if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | sudo bas
 install_winbind() {
   sudo apt install -y winbind libnss-winbind
   sudo sed -i -E '/^hosts:/ { /(^|[[:space:]])wins([[:space:]]|$)/! s/$/ wins/ }' /etc/nsswitch.conf
+}
+
+install_ssh() {
+  sudo apt install -y openssh-server
+  if [[ command -v ufw >/dev/null 2>&1 ]]; then
+    sudo ufw allow ssh
+    sudo ufw enable
 }
 
 # Ejecuta la función principal
