@@ -4,7 +4,7 @@
 # Script para automatizar la instalación
 # de Oh-My-Zsh! en Ubuntu.
 # -------------
-# Script for automating the installation 
+# Script for automating the installation
 # of Oh-My-Zsh! on Ubuntu.
 # -------------
 
@@ -33,7 +33,7 @@ source "$ROOT_DIR/modules/run-step-ui.sh"
 
 main() {
   print_header "$TITLE" "$DESCRIPTION" "$AUTHOR"
-  
+
   # Pide credenciales una sola vez al inicio.
   if ! sudo -n true 2>/dev/null; then
     sudo -v
@@ -42,7 +42,6 @@ main() {
   print_section "Instalando dependencias necesarias"
   run_step "Actualizando indices de APT" sudo apt update
   run_step "Instalando dependencias necesarias" dep_install
-  run_step "Instalando fuentes necesarias" fonts_install
   run_step "Instalando zsh" sudo apt install -y zsh
   run_step "Cambiando a zsh como shell por defecto" sudo chsh -s $(which zsh) $USER
 
@@ -66,26 +65,6 @@ dep_install() {
   if ! command -v curl >/dev/null 2>&1; then
     sudo apt-get install -y curl
   fi
-}
-
-fonts_install() {
-  FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Agave.zip"
-  FONT_NAME="Agave-Nerd-Font"
-  INSTALL_DIR="$HOME/.local/share/fonts/$FONT_NAME"
-
-  TMP_DIR="$(mktemp -d)"
-  trap 'rm -rf "$TMP_DIR"' EXIT
-
-  mkdir -p "$INSTALL_DIR"
-
-  curl -L "$FONT_URL" -o "$TMP_DIR/font.zip"
-
-  unzip -q "$TMP_DIR/font.zip" -d "$TMP_DIR/extracted"
-
-  find "$TMP_DIR/extracted" -type f \( -iname "*.ttf" -o -iname "*.otf" \) -print0 \
-    | xargs -0 -I{} cp -f "{}" "$INSTALL_DIR/"
-
-  fc-cache -f "$HOME/.local/share/fonts"
 }
 
 omz_install() {
@@ -131,4 +110,4 @@ echo -e "\n${BLUE} Esto es para que las apps instaladas con snap se indicen corr
 read -p "Cambia la fuente en tu terminal a Agave Nerd Font y presiona enter para continuar con la configuración de zsh..."
 # Iniciar configuración del tema Powerlevel10k
 # Start Powerlevel10k theme configuration
-zsh
+# zsh
