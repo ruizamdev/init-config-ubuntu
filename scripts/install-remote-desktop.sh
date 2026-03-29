@@ -36,6 +36,8 @@ main() {
   run_step "Actualizando" sudo apt update
   print_section "Instalando AnyDesk"
   run_step "Ejecutando" install_anydesk
+  print_section "Instalando RustDesk"
+  run_step "Ejecutando" install_rustdesk
   
   # ===============================================
 
@@ -57,5 +59,15 @@ install_anydesk() {
   sudo apt install anydesk -y
 }
 
+install_rustdesk() {
+  local pkg_url="https://github.com/rustdesk/rustdesk/releases/download/1.4.6/rustdesk-1.4.6-x86_64.deb"
+  local pkg_name="rustdesk.deb"
+
+  TEMP_DIR="$(mktemp -d)"
+  trap 'rm -rf "$TEMP_DIR"' EXIT
+
+  curl -L "$pkg_url" -o "$TEMP_DIR/$pkg_name"
+  sudo apt install -y "$TEMP_DIR/$pkg_name"
+}
 # Ejecuta la función principal
 main "$@"

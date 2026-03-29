@@ -53,8 +53,7 @@ install_gitkraken() {
   trap 'rm -rf "$TMP_DIR"' EXIT
 
   curl -L "$pkg_url" -o "$TMP_DIR/$pkg_name"
-  cd "$TMP_DIR"
-  sudo apt install -y "./$pkg_name"
+  sudo apt install -y "$TMP_DIR/$pkg_name"
 }
 
 # Ejecuta la función principal
