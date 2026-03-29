@@ -4,8 +4,8 @@
 # Info variables
 # -------------
 
-TITLE="Instalación de Spotify"
-DESCRIPTION="Este script instala Spotify en el sistema desde paquete DEB oficial."
+TITLE="Instalación de GitKraken"
+DESCRIPTION="Este script instala GitKraken, un cliente de Git visual y multiplataforma, en sistemas basados en Debian/Ubuntu."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
@@ -32,12 +32,10 @@ main() {
 
   # ===============================================
   # Aquí van los pasos principales del script
-  print_section "Agregando repositorio de Spotify"
-  run_step "Agregando clave GPG" add_repo
-  print_section "Instalando Spotify"
-  run_step "Instalando paquete" install_package
-  
-  
+
+  print_section "Descarga e instalación de GitKraken"
+  run_step "Ejecutando" install_gitkraken
+
   # ===============================================
 
   echo -e "\n${GREEN}${BOLD}Proceso terminado correctamente.${RESET}"
@@ -47,14 +45,15 @@ main() {
 # Funciones adicionales
 # ================================
 
-add_repo(){
-  curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-  echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-}
+install_gitkraken() {
+  local pkg_url="https://release.gitkraken.com/linux/gitkraken-amd64.deb"
+  local pkg_name="gitkraken.deb"
 
-install_package() {
-  sudo apt update
-  sudo apt install spotify-client -y
+  TMP_DIR="$(mktemp -d)"
+  trap 'rm -rf "$TMP_DIR"' EXIT
+
+  curl -L "$pkg_url" -o "$TMP_DIR/$pkg_name"
+  sudo apt install -y "$TMP_DIR/$pkg_name"
 }
 
 # Ejecuta la función principal
