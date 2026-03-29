@@ -52,7 +52,8 @@ main() {
   run_step "Instalación de Server SSH" install_ssh
   run_step "Instalando Net Tools" sudo apt install -y net-tools
   run_step "Instalando nmap with gui" sudo apt install -y zenmap
-  run_step "Instalando Winbind" install_winbind
+  run_step "Instalando dependencias para recursos compartidos" configure_shares
+  run_step "Configurando nsswitch" configure_nsswitch_winbind
   run_step "Instalando SpeedTest CLI" sudo apt install -y speedtest-cli
   run_step "Instalando Transmission BitTorrent Client" sudo apt install -y transmission
   run_step "Instalando Thunderbird" sudo apt install -y thunderbird
@@ -86,16 +87,47 @@ install_zt() {
 if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | sudo bash; fi
 }
 
-install_winbind() {
-  sudo apt install -y winbind libnss-winbind
-  sudo sed -i -E '/^hosts:/ { /(^|[[:space:]])wins([[:space:]]|$)/! s/$/ wins/ }' /etc/nsswitch.conf
+configure_shares() {
+  packages=(
+    "samba"
+    "smbclient"
+    "cifs-utils"
+    "winbind"
+    "nfs-common"
+    "libnfs-utils"
+    "sshfs"
+    "avahi-daemon"
+    "libnss-mdns"
+    "gvfs-backends"
+    "gvfs-fuse"
+  )
+
+  for package in "${packages[@]}"; do
+    if ! dpkg -s "$package" >/dev/null 2>&1; then
+      sudo apt install -y "$package"
+    fi
+  done
+
+  sudo systemctl enable --now avahi-daemon
+  sudo systemctl enable --now winbind
+}
+
+configure_nsswitch_winbind() {
+  local file="/etc/nsswitch.conf"
+
+  for campo in passwd group shadow; do
+    if ! grep -Eq "^${campo}:.*\bwinbind\b" "$file"; then
+      sudo sed -i "/^${campo}:/ s/$/ winbind/" "$file"
+    fi
+  done
 }
 
 install_ssh() {
   sudo apt install -y openssh-server
-  if [[ command -v ufw >/dev/null 2>&1 ]]; then
+  if command -v ufw >/dev/null 2>&1; then
     sudo ufw allow ssh
     sudo ufw enable
+  fi
 }
 
 # Ejecuta la función principal
