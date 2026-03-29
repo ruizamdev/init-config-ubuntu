@@ -4,8 +4,8 @@
 # Info variables
 # -------------
 
-TITLE="Instalación de GitKraken"
-DESCRIPTION="Este script instala GitKraken, un cliente de Git visual y multiplataforma, en sistemas basados en Debian/Ubuntu."
+TITLE="Instalación de Escritorio Remoto (AnyDesk y RustDesk)"
+DESCRIPTION="Este script instala y configura AnyDesk y RustDesk para acceso remoto en tu sistema. AnyDesk es una solución de escritorio remoto rápida y segura, mientras que RustDesk es una alternativa de código abierto que también ofrece acceso remoto eficiente."
 AUTHOR="Autor: Armando Ruiz <artmx@proton.me>"
 
 set -euo pipefail
@@ -32,10 +32,11 @@ main() {
 
   # ===============================================
   # Aquí van los pasos principales del script
-
-  print_section "Descarga e instalación de GitKraken"
-  run_step "Ejecutando" install_gitkraken
-
+  print_section "Actualizando repos"
+  run_step "Actualizando" sudo apt update
+  print_section "Instalando AnyDesk"
+  run_step "Ejecutando" install_anydesk
+  
   # ===============================================
 
   echo -e "\n${GREEN}${BOLD}Proceso terminado correctamente.${RESET}"
@@ -45,15 +46,15 @@ main() {
 # Funciones adicionales
 # ================================
 
-install_gitkraken() {
-  local pkg_url="https://release.gitkraken.com/linux/gitkraken-amd64.deb"
-  local pkg_name="gitkraken.deb"
+install_anydesk() {
+  sudo apt install ca-certificates curl apt-transport-https -y
+  sudo curl -fsSL https://keys.anydesk.com/repos/DEB-GPG-KEY -o /etc/apt/keyrings/keys.anydesk.com.asc
+  sudo chmod a+r /etc/apt/keyrings/keys.anydesk.com.asc
 
-  TMP_DIR="$(mktemp -d)"
-  trap 'rm -rf "$TMP_DIR"' EXIT
+  echo "deb [signed-by=/etc/apt/keyrings/keys.anydesk.com.asc] https://deb.anydesk.com all main" | sudo tee /etc/apt/sources.list.d/anydesk-stable.list > /dev/null
 
-  curl -L "$pkg_url" -o "$TMP_DIR/$pkg_name"
-  sudo apt install -y "$TMP_DIR/$pkg_name"
+  sudo apt update
+  sudo apt install anydesk -y
 }
 
 # Ejecuta la función principal
