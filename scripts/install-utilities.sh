@@ -40,6 +40,7 @@ main() {
   run_step "Instalando BashTop" sudo apt install -y bashtop
   run_step "Instalando GParted" sudo apt install -y gparted
   run_step "Instalando LMSensors" sudo apt install -y lm-sensors
+  run_step "Instalando flatpak" install_flatpak
 
   print_section "Instalación de utilerias de desarrollo"
   run_step "Instalando Git" sudo apt install -y git
@@ -120,6 +121,12 @@ configure_nsswitch_winbind() {
       sudo sed -i "/^${campo}:/ s/$/ winbind/" "$file"
     fi
   done
+}
+
+install_flatpak() {
+  sudo apt install flatpak
+  sudo apt install gnome-software-plugin-flatpak
+  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 }
 
 install_ssh() {
