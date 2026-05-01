@@ -30,14 +30,12 @@ main() {
     sudo -v
   fi
 
-  print_section "Instalación"
-  run_step "Desinstalando paquetes conflictivos" bash -c 'sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)'
-  run_step "Configurando repositorio de Docker" repo_config
-  run_step "Instalando Docker Engine" bash -c 'sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y'
-  run_step "Agregando usuario al grupo docker" bash -c 'sudo usermod -aG docker $USER'
-  run_step "Habilitando servicio" sudo systemctl start docker
-  print_section "Verificando instalación"
-  sudo docker run hello-world
+  print_section "Configuraciones previas"
+  run_step "Instalando dnf plugins" sudo dnf install -y dnf-plugins-core
+  run_step "Agregando repo" sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+  run_step "Instalando Docker Engine" sudo dnf install -y docker-ce-cli
+  run_step "Instalando Docker Desktop..." install_docker
+  
 
 
   echo -e "\n${GREEN}${BOLD}Proceso terminado correctamente.${RESET}"
@@ -47,24 +45,15 @@ main() {
 # Funciones adicionales
 # ================================
 
-repo_config() {
-  # Add Docker's official GPG key:
-sudo apt update
-sudo apt install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+install_docker() {
+  local pkg_url="https://desktop.docker.com/linux/main/amd64/docker-desktop-x86_64.rpm?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64"
+  local pkg_name="docker-desktop.rpm"
 
-# Add the repository to Apt sources:
-sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
-Types: deb
-URIs: https://download.docker.com/linux/ubuntu
-Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-Components: stable
-Signed-By: /etc/apt/keyrings/docker.asc
-EOF
+  TMP_DIR="$(mktemp -d)"
+  trap 'rm -rf "$TMP_DIR"' EXIT
 
-sudo apt update
+  curl -L "$pkg_url" -o "$TMP_DIR/$pkg_name"
+  sudo dnf install -y "$TMP_DIR/$pkg_name"
 }
 
 # Ejecuta la función principal

@@ -33,7 +33,7 @@ main() {
   # ===============================================
   # Aquí van los pasos principales del script
   print_section "Actualizando repos"
-  run_step "Actualizando" sudo apt update
+  run_step "Actualizando" sudo dnf makecache
   print_section "Instalando AnyDesk"
   run_step "Ejecutando" install_anydesk
   print_section "Instalando RustDesk"
