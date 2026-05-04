@@ -37,7 +37,7 @@ main() {
   fi
 
   print_section "Instalación de Vim y gestor de plugins"
-  run_step "Actualizando índices de APT" sudo apt update
+  run_step "Actualizando índices de APT" sudo dnf makecache
   run_step "Instalando Vim" vim_install
   run_step "Instalando Vim-Plug" vim_pm_install
   run_step "Configurando Vim y plugins" vim_config
@@ -52,7 +52,7 @@ main() {
 
 vim_install() {
   if ! command -v vim &> /dev/null; then
-    sudo apt install vim -y
+    sudo dnf install vim -y
   fi
 }
 
