@@ -37,42 +37,42 @@ main() {
   run_step "Actualizando paquetes" sudo apt update
 
   print_section "Instalación de utilerias de sistema"
-  run_step "Instalando BashTop" sudo apt install -y bashtop
-  run_step "Instalando GParted" sudo apt install -y gparted
-  run_step "Instalando LMSensors" sudo apt install -y lm-sensors
-  run_step "Instalando flatpak" install_flatpak
+  run_step "Instalando BashTop" sudo dnf install -y btop
+  run_step "Instalando GParted" sudo dnf install -y gparted
+  run_step "Instalando LMSensors" sudo dnf install -y lm-sensors
+  # run_step "Instalando flatpak" install_flatpak
 
   print_section "Instalación de utilerias de desarrollo"
-  run_step "Instalando Git" sudo apt install -y git
-  run_step "Instalando Curl" sudo apt install -y curl
-  run_step "Instalando Wget" sudo apt install -y wget
-  run_step "Instalando Unzip" sudo apt install -y unzip
-  run_step "Instalando Build-Essential" sudo apt install -y build-essential
+  run_step "Instalando Git" sudo dnf install -y git
+  run_step "Instalando Curl" sudo dnf install -y curl
+  run_step "Instalando Wget" sudo dnf install -y wget
+  run_step "Instalando Unzip" sudo dnf install -y unzip
+  run_step "Instalando Build-Essential" sudo dnf install -y build-essential
 
   print_section "Instalación de utilerias de red"
   run_step "Instalación de Server SSH" install_ssh
-  run_step "Instalando Net Tools" sudo apt install -y net-tools
-  run_step "Instalando nmap with gui" sudo apt install -y zenmap
-  run_step "Instalando dependencias para recursos compartidos" configure_shares
-  run_step "Configurando nsswitch" configure_nsswitch_winbind
-  run_step "Instalando SpeedTest CLI" sudo apt install -y speedtest-cli
-  run_step "Instalando Transmission BitTorrent Client" sudo apt install -y transmission
-  run_step "Instalando Thunderbird" sudo apt install -y thunderbird
-  run_step "Instalando filezilla" sudo apt install -y filezilla
-  run_step "Instalando FreeRDP" sudo apt install -y freerdp3-x11
-  run_step "Instalando ZeroTier" install_zt
+  run_step "Instalando Net Tools" sudo dnf install -y net-tools
+  run_step "Instalando nmap with gui" sudo dnf install -y zenmap
+  # run_step "Instalando dependencias para recursos compartidos" configure_shares
+  # run_step "Configurando nsswitch" configure_nsswitch_winbind
+  run_step "Instalando SpeedTest CLI" sudo dnf install -y speedtest-cli
+  run_step "Instalando Transmission BitTorrent Client" sudo dnf install -y transmission
+  run_step "Instalando Thunderbird" flatpak install flathub -y net.thunderbird.Thunderbird
+  run_step "Instalando filezilla" sudo dnf install -y filezilla
+  # run_step "Instalando FreeRDP" sudo apt install -y freerdp3-x11
+  # run_step "Instalando ZeroTier" install_zt
 
   print_section "Instalación de utilerias de ofimática"
-  run_step "Instalando Okular" sudo apt install -y okular
+  run_step "Instalando Okular" sudo dnf install -y okular
 
   print_section "Instalación de apps multimedia"
-  run_step "Instalando VLC" sudo apt install -y vlc
+  run_step "Instalando VLC" sudo dnf install -y vlc
 
   print_section "Instalación de utilerias misceláneas"
-  run_step "Instalando Shutter" sudo apt install -y shutter
-  run_step "Instalando Eza" sudo apt install -y eza
-  run_step "Instalando Grc" sudo apt install -y grc
-  run_step "Instalando tree" sudo apt install -y tree
+  run_step "Instalando Shutter" sudo dnf install -y shutter
+  run_step "Instalando Eza" sudo dnf install -y eza
+  run_step "Instalando Grc" sudo dnf install -y grc
+  run_step "Instalando tree" sudo dnf install -y tree
 
   # ===============================================
 
