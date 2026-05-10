@@ -46,14 +46,14 @@ main() {
 # ================================
 
 install_gitkraken() {
-  local pkg_url="https://release.gitkraken.com/linux/gitkraken-amd64.deb"
-  local pkg_name="gitkraken.deb"
+  local pkg_url="https://release.gitkraken.com/linux/gitkraken-amd64.rpm"
+  local pkg_name="gitkraken.rpm"
 
   TMP_DIR="$(mktemp -d)"
   trap 'rm -rf "$TMP_DIR"' EXIT
 
   curl -L "$pkg_url" -o "$TMP_DIR/$pkg_name"
-  sudo apt install -y "$TMP_DIR/$pkg_name"
+  sudo dnf install -y "$TMP_DIR/$pkg_name"
 }
 
 # Ejecuta la función principal
