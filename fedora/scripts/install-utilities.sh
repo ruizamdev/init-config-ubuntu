@@ -34,33 +34,37 @@ main() {
   # Aquí van los pasos principales del script
 
   print_section "Actualizando lista de paquetes"
-  run_step "Actualizando paquetes" sudo apt update
+  run_step "Actualizando paquetes" sudo dnf makecache
 
   print_section "Instalación de utilerias de sistema"
-  run_step "Instalando BashTop" sudo dnf install -y btop
+  run_step "Instalando BTop" sudo dnf install -y btop
   run_step "Instalando GParted" sudo dnf install -y gparted
-  run_step "Instalando LMSensors" sudo dnf install -y lm-sensors
-  # run_step "Instalando flatpak" install_flatpak
+  run_step "Instalando LMSensors" sudo dnf install -y lm_sensors
+
+  print_section "Instalación de Tweaks y Extensiones de Gnome"
+  run_step "Instalando Gnome Tweaks" sudo dnf install -y gnome-tweaks
+  run_step "instalación de Extensiones" install_extensions
+  run_step "Instalación del runtime gnome Platform" install_gnome_platform
 
   print_section "Instalación de utilerias de desarrollo"
   run_step "Instalando Git" sudo dnf install -y git
   run_step "Instalando Curl" sudo dnf install -y curl
   run_step "Instalando Wget" sudo dnf install -y wget
   run_step "Instalando Unzip" sudo dnf install -y unzip
-  run_step "Instalando Build-Essential" sudo dnf install -y build-essential
+  run_step "Instalando Build-Essential" sudo dnf install -y @development-tools
 
   print_section "Instalación de utilerias de red"
   run_step "Instalación de Server SSH" install_ssh
   run_step "Instalando Net Tools" sudo dnf install -y net-tools
-  run_step "Instalando nmap with gui" sudo dnf install -y zenmap
-  # run_step "Instalando dependencias para recursos compartidos" configure_shares
+  run_step "Instalando nmap with gui" flatpak install -y flathub org.nmap.Zenmap
+  run_step "Instalando dependencias para recursos compartidos" configure_shares
   # run_step "Configurando nsswitch" configure_nsswitch_winbind
   run_step "Instalando SpeedTest CLI" sudo dnf install -y speedtest-cli
   run_step "Instalando Transmission BitTorrent Client" sudo dnf install -y transmission
-  run_step "Instalando Thunderbird" flatpak install flathub -y net.thunderbird.Thunderbird
+  run_step "Instalando Thunderbird" flatpak install fedora -y org.mozilla.Thunderbird
   run_step "Instalando filezilla" sudo dnf install -y filezilla
-  # run_step "Instalando FreeRDP" sudo apt install -y freerdp3-x11
-  # run_step "Instalando ZeroTier" install_zt
+  run_step "Instalando FreeRDP" sudo dnf install -y freerdp
+  run_step "Instalando ZeroTier" install_zt
 
   print_section "Instalación de utilerias de ofimática"
   run_step "Instalando Okular" sudo dnf install -y okular
@@ -92,25 +96,25 @@ configure_shares() {
   packages=(
     "samba"
     "smbclient"
-    "cifs-utils"
-    "winbind"
-    "nfs-common"
-    "libnfs-utils"
+    # "cifs-utils"
+    # "winbind"
+    # "nfs-common"
+    # "libnfs-utils"
     "sshfs"
-    "avahi-daemon"
-    "libnss-mdns"
-    "gvfs-backends"
-    "gvfs-fuse"
+    # "avahi-daemon"
+    # "libnss-mdns"
+    # "gvfs-backends"
+    # "gvfs-fuse"
   )
 
   for package in "${packages[@]}"; do
-    if ! dpkg -s "$package" >/dev/null 2>&1; then
-      sudo apt install -y "$package"
+    if ! dnf --assumeno "$package" >/dev/null 2>&1; then
+      sudo dnf install -y "$package"
     fi
   done
 
-  sudo systemctl enable --now avahi-daemon
-  sudo systemctl enable --now winbind
+  # sudo systemctl enable --now avahi-daemon
+  # sudo systemctl enable --now winbind
 }
 
 configure_nsswitch_winbind() {
@@ -135,6 +139,17 @@ install_ssh() {
     sudo ufw allow ssh
     sudo ufw enable
   fi
+}
+
+install_extensions() {
+  sudo dnf install -y gnome-extensions-app
+  sudo dnf install -y gnome-shell-extension-appindicator
+  sudo dnf install -y gnome-shell-extension-dash-to-dock
+}
+
+install_gnome_platform() {
+  local gnome_branch="$(gnome-shell --version | awk '{print $3}' | cut -d. -f1)"
+  flatpak install -y flathub "org.gnome.Platform/x86_64/${gnome_branch}"
 }
 
 # Ejecuta la función principal
